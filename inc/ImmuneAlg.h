@@ -18,19 +18,22 @@ struct Point
 	double y{0};
 };
 
-typedef vector<Point > Mat2;
-typedef vector<double > Mat1;
+typedef vector<Point > PntVec;
+typedef vector<double > DblVec;
+typedef vector<int > IntVec;
 
 double sqr(double x);
 
 double gsPrice(Point& point);
 
-void popInitiation(Mat2& pop, Mat1& mSLL);
+void popInitiation(PntVec& pop, DblVec& mSLL);
 
-double sumND(Mat1& nD);
-void density(Mat2& pop, Mat1& nD);
+double sumND(DblVec& nD);
+DblVec density(PntVec& pop);
 
-void updateMSLL(Mat1& mSLL, Mat1& nD);
+void updateMSLL(DblVec& mSLL, DblVec& nD);
 
+IntVec sortAndGetIndex(DblVec& mat);
 
+void sortPopWithIndex(PntVec& pop, IntVec& index);
 #endif /* INC_IMMUNEALG_H_ */

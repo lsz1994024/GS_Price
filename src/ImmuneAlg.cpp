@@ -7,11 +7,12 @@
 
 #include "../inc/ImmuneAlg.h"
 #include <stdlib.h>
+#include <algorithm>
 
-void popInitiation(Mat2& pop, Mat1& mSLL)
+void popInitiation(PntVec& pop, DblVec& mSLL)
 {
 	int index = 0;
-	for (Mat2::iterator p = pop.begin(); p < pop.end(); p++)
+	for (PntVec::iterator p = pop.begin(); p < pop.end(); p++)
 	{
 		p->x = rand()*(Xs-Xx) + Xx;
 		p->y = rand()*(Xs-Xx) + Xx;
@@ -31,38 +32,63 @@ double gsPrice(Point& p)
 		  * (30 + sqr(2*p.x -3*p.y)*(18 - 32*p.x + 12*sqr(p.x) + 48*sqr(p.y) - 36*p.x*p.y + 27*sqr(p.y)));
 }
 
-double sumND(Mat1& nD)
+double aveND(DblVec& nD)
 {
 	double sum = 0;
-	for (Mat1::iterator i  = nD.begin(); i < nD.end(); i++)
+	for (DblVec::iterator i  = nD.begin(); i < nD.end(); i++)
 	{
 		sum += *i;
 	}
-	return sum;
+	return sum/nD.size();
 }
 
 //计算个体浓度和激励度
-void density(Mat2& pop, Mat1& nD)
+DblVec density(PntVec& pop)
 {
-	int indexI = 0;
-	for (Mat2::iterator i = pop.begin(); i < pop.end(); i++)
+	DblVec nD;
+	for (PntVec::iterator i = pop.begin(); i < pop.end(); i++)
 	{
-		Mat1 tempND(NP);
+		DblVec tempND(pop.size());
 		int indexJ = 0;
-		for (Mat2::iterator j = pop.begin(); j < pop.end(); j++)
+		for (PntVec::iterator j = pop.begin(); j < pop.end(); j++)
 		{
 			tempND[indexJ] = sqr(i->x - j->x) + sqr(i->y - j->y) < detas ? 1 : 0;
 			indexJ++;
 		}
-		nD[indexI] = sumND(tempND);
+		nD.push_back(aveND(tempND));
 	}
+	return nD;
 }
 
-void updateMSLL(Mat1& mSLL, Mat1& nD)
+void updateMSLL(DblVec& mSLL, DblVec& nD)
 {
-	for(int index = 0; index < NP; index++)
+	for(size_t index = 0; index < mSLL.size(); index++)
 	{
 		mSLL[index] = alpha*mSLL[index] - beta*nD[index];
 	}
 }
+
+IntVec sortAndGetIndex(DblVec& mat)
+{
+	IntVec index;
+
+	DblVec temp = mat;
+	sort(mat.begin(), mat.end());
+	for(DblVec::iterator i = mat.begin(); i < mat.end(); i++)
+	{
+		index.push_back(find(temp.begin(), temp.end(), *i) - temp.begin());
+	}
+	return index;
+}
+
+void sortPopWithIndex(PntVec& pop, IntVec& index)
+{
+	PntVec tempPop = pop;
+	for(size_t i = 0; i < pop.size(); i++)
+	{
+		pop[i] = tempPop[index[i]];
+	}
+}
+
+
 
