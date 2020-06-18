@@ -35,5 +35,7 @@ void updateMSLL(DblVec& mSLL, DblVec& nD);
 
 IntVec sortAndGetIndex(DblVec& mat);
 
+double rand01();
+
 void sortPopWithIndex(PntVec& pop, IntVec& index);
 #endif /* INC_IMMUNEALG_H_ */

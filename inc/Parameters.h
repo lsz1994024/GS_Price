@@ -8,6 +8,7 @@
 #ifndef INC_PARAMETERS_H_
 #define INC_PARAMETERS_H_
 
+#define RAND01 rand()/(RAND_MAX + 1.0)
 const double D=2;                                  //免疫个体维数
 const double NP=50;                                //免疫个体数目
 const double Xs=4;                                 //上限

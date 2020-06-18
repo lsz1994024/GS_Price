@@ -8,14 +8,23 @@
 #include "../inc/ImmuneAlg.h"
 #include <stdlib.h>
 #include <algorithm>
+#include "time.h"
+#include <iostream>
+#include "math.h"
+
+double rand01()
+{
+	return time(NULL) % 3 == 0 ? rand()/(RAND_MAX + 1.0) : (1 - rand()/(RAND_MAX + 1.0));
+};
 
 void popInitiation(PntVec& pop, DblVec& mSLL)
 {
 	int index = 0;
 	for (PntVec::iterator p = pop.begin(); p < pop.end(); p++)
 	{
-		p->x = rand()*(Xs-Xx) + Xx;
-		p->y = rand()*(Xs-Xx) + Xx;
+		p->x = rand01()*(Xs-Xx) + Xx;
+		p->x = rand01()*(Xs-Xx) + Xx;
+		p->y = rand01()*(Xs-Xx) + Xx;
 		mSLL[index] = gsPrice(*p);
 		index++;
 	}
@@ -28,8 +37,8 @@ double sqr(double x)
 
 double gsPrice(Point& p)
 {
-	return  (1 + sqr((1 + p.x + p.y))*(19 - 14*p.x + 3*sqr(p.x) - 14*p.y + 6*p.x*p.y + 3*sqr(p.y)))
-		  * (30 + sqr(2*p.x -3*p.y)*(18 - 32*p.x + 12*sqr(p.x) + 48*sqr(p.y) - 36*p.x*p.y + 27*sqr(p.y)));
+	return  (1 + sqr(1 + p.x + p.y)*(19 - 14*p.x + 3*sqr(p.x) - 14*p.y + 6*p.x*p.y + 3*sqr(p.y)))
+		  * (30 + sqr(2*p.x - 3*p.y)*(18 - 32*p.x + 12*sqr(p.x) + 48*p.y - 36*p.x*p.y + 27*sqr(p.y)));
 }
 
 double aveND(DblVec& nD)
@@ -48,12 +57,10 @@ DblVec density(PntVec& pop)
 	DblVec nD;
 	for (PntVec::iterator i = pop.begin(); i < pop.end(); i++)
 	{
-		DblVec tempND(pop.size());
-		int indexJ = 0;
+		DblVec tempND;
 		for (PntVec::iterator j = pop.begin(); j < pop.end(); j++)
 		{
-			tempND[indexJ] = sqr(i->x - j->x) + sqr(i->y - j->y) < detas ? 1 : 0;
-			indexJ++;
+			tempND.push_back(sqrt(sqr(i->x - j->x) + sqr(i->y - j->y)) < detas ? 1 : 0);
 		}
 		nD.push_back(aveND(tempND));
 	}
