@@ -12,95 +12,82 @@ using namespace std;
 
 int main()
 {
-	srand((unsigned)(time(NULL) )*1);
-	PntVec initPop(NP);
-	DblVec initMSLL(NP);
-	DblVec naMSLL(NP);
+	srand((unsigned)time(NULL));
+	PntVec initPop(NUM_OF_ANTIBODY);
+	DblVec initStimu(NUM_OF_ANTIBODY);
+	DblVec cloneStimu(NUM_OF_CLONE);
 
-	popInitiation(initPop, initMSLL);
+	popAndStimuInit(initPop, initStimu);
 
-	DblVec nD = density(initPop);
-	updateMSLL(initMSLL, nD);
+	DblVec initDen = density(initPop);
 
-	IntVec initIndex = sortAndGetIndex(initMSLL);
+	updateStimu(initStimu, initDen);
+
+	IntVec initIndex = sortStimuAndGetIndex(initStimu);
 	sortPopWithIndex(initPop, initIndex);
 
-	for(int gen = 0; gen < G+50; gen++)
+	for(uint gen = 0; gen < MAX_GEN; gen++)
 	{
-		DblVec bestMSLL;
-		PntVec bestClone;
-		for(int i = 0; i < NP/2; i++)
+		DblVec bestStimu;
+		PntVec bestPop;
+		for(uint i = 0; i < NUM_OF_ANTIBODY/2; i++)
 		{
-			PntVec NaPop(Nc1, initPop[i]);
-			double deta = deta0/gen;   // 也得到了inf  但是和matlab是一样的吗？
+			PntVec clonePop(NUM_OF_CLONE, initPop[i]);
 
-			for(int j = 0; j < Nc1; j++)
+			double newNeigh = NEIGHBOR/gen;
+
+			for(uint j = 0; j < NUM_OF_CLONE; j++)
 			{
-				if(rand() < pm)
+				if(rand01() < PROB_OF_MUTAION)
 				{
-					NaPop[j].x += (rand() - 0.5)*deta;
-					NaPop[j].y += (rand() - 0.5)*deta;
+					clonePop[j].x += (rand01() - 0.5)*newNeigh;
+					clonePop[j].y += (rand01() - 0.5)*newNeigh;
 				}
 
-				if(NaPop[j].x > Xs || NaPop[j].x < Xx) NaPop[j].x = rand()*(Xs - Xx) + Xx;
+				if(clonePop[j].x > H_BOUNDARY || clonePop[j].x < L_BOUNDARY) clonePop[j].x = rand01()*(H_BOUNDARY - L_BOUNDARY) + L_BOUNDARY;
 
-				if(NaPop[j].y > Xs || NaPop[j].y < Xx) NaPop[j].y = rand()*(Xs - Xx) + Xx;
+				if(clonePop[j].y > H_BOUNDARY || clonePop[j].y < L_BOUNDARY) clonePop[j].y = rand01()*(H_BOUNDARY - L_BOUNDARY) + L_BOUNDARY;
 			}
 
-			NaPop[0] = initPop[i];
+			clonePop[0] = initPop[i];
 
-			for(int j = 0; j < Nc1; j++)
+			for(uint j = 0; j < NUM_OF_CLONE; j++)
 			{
-				naMSLL[j] = gsPrice(NaPop[j]);
+				cloneStimu[j] = gsPrice(clonePop[j]);
 			}
 
-			IntVec naIndex = sortAndGetIndex(naMSLL);
-//			sortPopWithIndex(initPop, naIndex);
-			bestMSLL.push_back(naMSLL[0]);
-			sortPopWithIndex(NaPop, naIndex);
-			bestClone.push_back(NaPop[0]);
+			IntVec cloneIndex = sortStimuAndGetIndex(cloneStimu);
+
+			bestStimu.push_back(cloneStimu[0]);
+			sortPopWithIndex(clonePop, cloneIndex);
+			bestPop.push_back(clonePop[0]);
 		}
 
-		DblVec nDofBest = density(bestClone);
-		updateMSLL(bestMSLL, nDofBest);
+		DblVec bestDen = density(bestPop);
+		updateStimu(bestStimu, bestDen);
 
-		PntVec bPop(NP/2);
-		DblVec bMSLL(NP/2);
+		PntVec newPop(NUM_OF_ANTIBODY/2);
+		DblVec newStimu(NUM_OF_ANTIBODY/2);
 
-		popInitiation(bPop, bMSLL);
-		DblVec bnD = density(bPop);
-		updateMSLL(bMSLL, bnD);
+		popAndStimuInit(newPop, newStimu);
+		DblVec newDen = density(newPop);
+		updateStimu(newStimu, newDen);
 
-//		PntVec newPop;
-//		newPop = bestClone;
-		bestClone.insert(bestClone.end(), bPop.begin(), bPop.end());
-		bestMSLL.insert(bestMSLL.end(), bMSLL.begin(), bMSLL.end());
+		bestPop.insert(bestPop.end(), newPop.begin(), newPop.end());
+		bestStimu.insert(bestStimu.end(), newStimu.begin(), newStimu.end());
 
-		IntVec newIndex = sortAndGetIndex(bestMSLL);
-		sortPopWithIndex(bestClone, newIndex);
+		IntVec newIndex = sortStimuAndGetIndex(bestStimu);
+		sortPopWithIndex(bestPop, newIndex);
 
-		initPop = bestClone;
+		initPop = bestPop;
 	}
 
-	printf("Best pop x, y = %f, %f\n", initPop[0].x, initPop[0].y);
-	printf("Min GSPrice is %f\n", gsPrice(initPop[0]));
+	printf("Calculated min value of GSPrice is %f at (%f, %f) \n", gsPrice(initPop[0]), initPop[0].x, initPop[0].y);
+
 	Point a;
 	a.x = 0; a.y = -1;
-	printf("lsz GSPrice is %f\n", gsPrice(a));
+	printf("Theoretical min value of GSPrice is %f at (0, -1) \n", gsPrice(a));
 
-//	double b = sqr(a.x+a.y);
-//
-//	printf("lsz b is %f\n", b);
-//	double a[3] = {1,0.1,2.1};
-//	vector<double > testv(a, a+3);
-//	IntVec testi = sortAndGetIndex(testv);
-//	for(int i = 0;i<3; i++)
-//	{
-//		printf("%f ", testv[i]);
-//		printf("\n");
-//		printf("%d ", testi[i]);
-//				printf("\n");
-//	}
 	return 0;
 }
 

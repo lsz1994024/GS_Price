@@ -22,20 +22,18 @@ typedef vector<Point > PntVec;
 typedef vector<double > DblVec;
 typedef vector<int > IntVec;
 
+double rand01();
 double sqr(double x);
-
 double gsPrice(Point& point);
+double aveND(DblVec& nD);
 
-void popInitiation(PntVec& pop, DblVec& mSLL);
+void popAndStimuInit(PntVec& pop, DblVec& mSLL);
 
-double sumND(DblVec& nD);
 DblVec density(PntVec& pop);
 
-void updateMSLL(DblVec& mSLL, DblVec& nD);
+void updateStimu(DblVec& mSLL, DblVec& nD);
 
-IntVec sortAndGetIndex(DblVec& mat);
-
-double rand01();
+IntVec sortStimuAndGetIndex(DblVec& mat);
 
 void sortPopWithIndex(PntVec& pop, IntVec& index);
 #endif /* INC_IMMUNEALG_H_ */
