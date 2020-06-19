@@ -27,6 +27,7 @@ int main()
 
 	DblVec cloneStimu(NUM_OF_CLONE);       //initialization of clone stimulation
 
+	PntVec popRecord;
 	for(uint gen = 0; gen < MAX_GEN; gen++)  //start the immune cycle
 	{
 		DblVec bestStimu;                //initialization of the best stimulation and population
@@ -81,13 +82,11 @@ int main()
 		sortPopWithIndex(bestPop, newIndex);
 
 		initPop = bestPop;        //assign the merged best population to initial population for iteration
+
+		popRecord.push_back(bestPop[0]);
 	}
 
-	printf("Calculated min value of GSPrice is %f at (%f, %f) \n", gsPrice(initPop[0]), initPop[0].x, initPop[0].y);
-
-	Point answer;
-	answer.x = 0; answer.y = -1;
-	printf("Theoretical min value of GSPrice is %f at (0, -1) \n", gsPrice(answer));
+	output(popRecord);
 
 	return 0;
 }

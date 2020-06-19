@@ -103,3 +103,19 @@ void adjustIfOutOfBound(Point& p)
 
 	if(p.y > H_BOUNDARY || p.y < L_BOUNDARY) p.y = rand01()*(H_BOUNDARY - L_BOUNDARY) + L_BOUNDARY;
 }
+
+void output(PntVec& pop)
+{
+	printf("=============Iteration Result=========\n");
+	printf("Iteration          Best Pop            Min Value\n");
+	for(uint i = 0; i < pop.size(); i++)
+	{
+		printf("%3d         (%f, %f)     %f     \n", i + 1, pop[i].x, pop[i].y, gsPrice(pop[i]));
+	}
+	printf("=============End=======================\n");
+
+	Point answer;
+	answer.x = 0; answer.y = -1;
+	printf("Theoretical min value of GSPrice is %f at (0, -1) \n", gsPrice(answer));
+	printf("The error is %f%% \n", (gsPrice(*pop.end()) - gsPrice(answer))/gsPrice(answer)/100);
+}

@@ -39,4 +39,6 @@ void sortPopWithIndex(PntVec& pop, IntVec& index);
 
 void adjustIfOutOfBound(Point& p);
 
+void output(PntVec& pop);
+
 #endif /* INC_IMMUNEALG_H_ */
