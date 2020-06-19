@@ -25,7 +25,7 @@ typedef vector<int > IntVec;
 double rand01();
 double sqr(double x);
 double gsPrice(Point& point);
-double aveND(DblVec& nD);
+double aveDen(DblVec& nD);
 
 void popAndStimuInit(PntVec& pop, DblVec& mSLL);
 
@@ -36,4 +36,7 @@ void updateStimu(DblVec& mSLL, DblVec& nD);
 IntVec sortStimuAndGetIndex(DblVec& mat);
 
 void sortPopWithIndex(PntVec& pop, IntVec& index);
+
+void adjustIfOutOfBound(Point& p);
+
 #endif /* INC_IMMUNEALG_H_ */
