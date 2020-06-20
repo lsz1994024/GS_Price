@@ -22,6 +22,11 @@ double sqr(double x)  //square operator
 	return x*x;
 }
 
+double rastrigin(Point& p)   //Rastrigin function, the antigen
+{
+	return  20 + sqr(p.x) - 10*cos(2*3.1415926*p.x) + sqr(p.y) - 10*cos(2*3.1415926*p.y);
+}
+
 double gsPrice(Point& p)   //Gold-Stein Price function, the antigen
 {
 	return  (1 + sqr(1 + p.x + p.y)*(19 - 14*p.x + 3*sqr(p.x) - 14*p.y + 6*p.x*p.y + 3*sqr(p.y)))

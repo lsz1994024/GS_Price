@@ -24,6 +24,7 @@ typedef vector<int > IntVec;
 
 double rand01();
 double sqr(double x);
+double rastrigin(Point& p);
 double gsPrice(Point& point);
 double aveDen(DblVec& nD);
 
